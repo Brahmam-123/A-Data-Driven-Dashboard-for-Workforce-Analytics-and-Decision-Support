@@ -1,0 +1,29 @@
+job_title,benchmark_low,benchmark_mid,benchmark_high,source,as_of_date
+Help Desk Technician,63087.0,72206.0,80071.0,internal_quartiles,2026-04-04
+System Administrator,76326.0,85660.0,93246.0,internal_quartiles,2026-04-04
+Logistics Coordinator,59519.0,62932.0,66876.0,internal_quartiles,2026-04-04
+Inventory Specialist,58011.0,61491.0,64608.0,internal_quartiles,2026-04-04
+Operations Analyst,65500.0,73677.0,81564.0,internal_quartiles,2026-04-04
+Accountant,50000.0,78000.0,120000.0,static,2026-04-04
+Accounts Payable Specialist,58859.0,62109.0,65770.0,internal_quartiles,2026-04-04
+SEO Specialist,63882.0,72329.0,81352.0,internal_quartiles,2026-04-04
+Recruiter,61651.0,65886.0,70161.0,internal_quartiles,2026-04-04
+IT Support Specialist,58138.0,61217.0,64372.0,internal_quartiles,2026-04-04
+Sales Manager,72000.0,110000.0,175000.0,static,2026-04-04
+Customer Service Representative,57893.0,61136.0,64448.0,internal_quartiles,2026-04-04
+Support Specialist,58703.0,61705.0,64849.0,internal_quartiles,2026-04-04
+Sales Specialist,66553.0,75297.0,82716.0,internal_quartiles,2026-04-04
+Sales Consultant,76535.0,86126.0,94266.0,internal_quartiles,2026-04-04
+Content Creator,57959.0,60814.0,64409.0,internal_quartiles,2026-04-04
+Software Developer,85840.0,92899.0,100894.0,internal_quartiles,2026-04-04
+Sales Representative,62701.0,68153.0,74920.0,internal_quartiles,2026-04-04
+Financial Analyst,58000.0,90000.0,140000.0,static,2026-04-04
+Operations Manager,65000.0,98000.0,155000.0,static,2026-04-04
+HR Coordinator,58623.0,62837.0,66760.0,internal_quartiles,2026-04-04
+Marketing Coordinator,63341.0,69022.0,74031.0,internal_quartiles,2026-04-04
+Customer Service Manager,77342.0,84298.0,92631.0,internal_quartiles,2026-04-04
+Marketing Manager,70000.0,105000.0,160000.0,static,2026-04-04
+Finance Manager,112029.0,122140.0,134173.0,internal_quartiles,2026-04-04
+HR Assistant,56822.0,60166.0,62536.0,internal_quartiles,2026-04-04
+IT Manager,95000.0,140000.0,200000.0,static,2026-04-04
+HR Manager,65000.0,100000.0,150000.0,static,2026-04-04

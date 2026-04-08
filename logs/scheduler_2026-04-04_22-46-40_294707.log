@@ -1,0 +1,78 @@
+2026-04-04 22:46:40.296 | INFO     | __main__:run_all:114 - ═══════════════════════════════════════════════
+2026-04-04 22:46:40.317 | INFO     | __main__:run_all:115 -   HR Analytics Pipeline — Full Run
+2026-04-04 22:46:40.317 | INFO     | __main__:run_all:116 - ═══════════════════════════════════════════════
+2026-04-04 22:46:40.318 | INFO     | __main__:task_live_export:42 - ── Task 1: Live HR Export ──────────────────────
+2026-04-04 22:46:41.840 | INFO     | scripts.db_connector:get_engine:43 - Connected to mysql at localhost:3306/hr_database
+2026-04-04 22:46:42.451 | SUCCESS  | scripts.db_connector:export_hr_live:181 - Exported 8,950 rows → exports\hr_live_export.csv
+2026-04-04 22:46:42.457 | INFO     | __main__:task_salary_benchmark:54 - ── Task 3: Salary Benchmarking ─────────────────
+2026-04-04 22:46:46.174 | INFO     | scripts.salary_benchmark:build_benchmarks:147 - Building benchmarks for 28 job titles...
+2026-04-04 22:46:52.179 | WARNING  | scripts.salary_benchmark:fetch_bls_wages:125 - BLS API error: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)). Will fall back to static data.
+2026-04-04 22:46:52.180 | INFO     | scripts.salary_benchmark:fetch_bls_wages:127 - Fetched 0 BLS wage series.
+2026-04-04 22:46:52.338 | SUCCESS  | scripts.salary_benchmark:build_benchmarks:209 - Salary benchmarks exported → exports\salary_benchmark.csv
+2026-04-04 22:46:52.629 | SUCCESS  | scripts.salary_benchmark:compare_salaries:263 - Salary comparison exported → exports\salary_comparison.csv
+2026-04-04 22:46:52.629 | INFO     | scripts.salary_benchmark:compare_salaries:266 - 
+── Salary Band Distribution ──
+2026-04-04 22:46:52.636 | INFO     | scripts.salary_benchmark:compare_salaries:267 - salary_band
+At Market       5705
+Below Market    1626
+Above Market    1619
+2026-04-04 22:46:52.637 | INFO     | scripts.salary_benchmark:compare_salaries:268 - 
+Avg salary vs market: -0.0%
+2026-04-04 22:46:52.639 | INFO     | __main__:task_attrition_model:72 - ── Task 2: Attrition Risk Scoring ──────────────
+2026-04-04 22:47:19.735 | INFO     | __main__:task_attrition_model:86 - Training attrition model (this may take a few minutes)...
+2026-04-04 22:47:19.774 | INFO     | scripts.attrition_model:engineer_features:153 - Feature engineering complete. Shape: (8950, 31)
+2026-04-04 22:47:19.775 | INFO     | scripts.attrition_model:engineer_features:154 - Attrition rate in dataset: 4.2%
+2026-04-04 22:47:19.779 | INFO     | scripts.attrition_model:train_model:206 - Training on 8,950 samples | 380 terminated, 8570 active
+2026-04-04 22:47:19.886 | INFO     | scripts.attrition_model:train_model:221 - After SMOTE: 6856 terminated, 6856 active
+2026-04-04 22:47:22.008 | INFO     | scripts.attrition_model:train_model:259 - 
+──── RandomForest ────
+2026-04-04 22:47:22.009 | INFO     | scripts.attrition_model:train_model:260 -   AUC-ROC : 0.9914
+2026-04-04 22:47:22.027 | INFO     | scripts.attrition_model:train_model:261 - 
+              precision    recall  f1-score   support
+
+      Active       0.99      1.00      0.99      1714
+  Terminated       1.00      0.76      0.87        76
+
+    accuracy                           0.99      1790
+   macro avg       0.99      0.88      0.93      1790
+weighted avg       0.99      0.99      0.99      1790
+
+2026-04-04 22:47:22.881 | INFO     | scripts.attrition_model:train_model:259 - 
+──── XGBoost ────
+2026-04-04 22:47:22.881 | INFO     | scripts.attrition_model:train_model:260 -   AUC-ROC : 1.0000
+2026-04-04 22:47:22.910 | INFO     | scripts.attrition_model:train_model:261 - 
+              precision    recall  f1-score   support
+
+      Active       1.00      1.00      1.00      1714
+  Terminated       1.00      0.97      0.99        76
+
+    accuracy                           1.00      1790
+   macro avg       1.00      0.99      0.99      1790
+weighted avg       1.00      1.00      1.00      1790
+
+2026-04-04 22:47:22.936 | SUCCESS  | scripts.attrition_model:train_model:273 - Best model: XGBoost (AUC=1.0000)
+2026-04-04 22:47:23.604 | SUCCESS  | scripts.attrition_model:train_model:291 - Model saved → models\attrition_model.pkl
+2026-04-04 22:47:23.679 | INFO     | scripts.attrition_model:score_employees:313 - Loaded XGBoost model (AUC=1.0000)
+2026-04-04 22:47:23.752 | INFO     | scripts.attrition_model:engineer_features:153 - Feature engineering complete. Shape: (8950, 31)
+2026-04-04 22:47:23.753 | INFO     | scripts.attrition_model:engineer_features:154 - Attrition rate in dataset: 4.2%
+2026-04-04 22:47:23.773 | INFO     | scripts.attrition_model:score_employees:319 - Scoring 8,570 active employees...
+2026-04-04 22:47:24.023 | SUCCESS  | scripts.attrition_model:score_employees:352 - Risk scores exported → exports\attrition_risk.csv
+2026-04-04 22:47:24.024 | INFO     | scripts.attrition_model:score_employees:355 - 
+── Attrition Risk Summary ──
+2026-04-04 22:47:24.027 | INFO     | scripts.attrition_model:score_employees:356 - risk_label
+Low    8570
+2026-04-04 22:47:24.031 | INFO     | __main__:task_performance_trends:96 - ── Task 4: Performance Trends ───────────────────
+2026-04-04 22:47:24.135 | WARNING  | scripts.performance_tracker:load_performance_from_csv:89 - data\performance_ratings.csv not found. Simulating trend data from performance snapshot.
+2026-04-04 22:47:24.136 | WARNING  | scripts.performance_tracker:_simulate_performance_history:123 - No performance column found. Generating random data.
+2026-04-04 22:47:46.338 | INFO     | scripts.performance_tracker:compute_trends:252 - 
+── Performance Trend Summary ──
+2026-04-04 22:47:46.343 | INFO     | scripts.performance_tracker:compute_trends:253 - trend_direction
+Improving    6200
+Declining    1600
+Stable       1150
+2026-04-04 22:47:46.344 | INFO     | scripts.performance_tracker:compute_trends:254 - At-risk employees (2+ consecutive low scores): 2426
+2026-04-04 22:47:46.345 | INFO     | scripts.performance_tracker:compute_trends:255 - Top performers (3+ streak): 2211
+2026-04-04 22:47:46.584 | SUCCESS  | scripts.performance_tracker:export_performance_files:274 - Performance trends exported → exports\performance_trends.csv
+2026-04-04 22:47:46.697 | SUCCESS  | scripts.performance_tracker:export_performance_files:284 - Performance summary exported → exports\performance_summary.csv
+2026-04-04 22:47:46.706 | SUCCESS  | __main__:run_all:123 - All tasks complete. Exports ready in: ./exports
+2026-04-04 22:47:46.707 | INFO     | __main__:run_all:124 - ═══════════════════════════════════════════════

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HR Analytics Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0f1117;color:#e2e8f0}
+header{background:#1a1f2e;padding:24px 40px;border-bottom:1px solid #2d3748;display:flex;align-items:center;justify-content:space-between}
+header h1{font-size:22px;font-weight:600;color:#63b3ed}
+header .sub{font-size:12px;color:#718096;margin-top:4px}
+.badge{background:#1D9E75;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px}
+.tabs{display:flex;background:#1a1f2e;border-bottom:1px solid #2d3748;padding:0 40px}
+.tab{padding:14px 24px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#718096}
+.tab.active{color:#63b3ed;border-bottom-color:#63b3ed}
+.page{display:none;padding:32px 40px}
+.page.active{display:block}
+.kpi-row{display:flex;gap:16px;margin-bottom:32px;flex-wrap:wrap}
+.kpi{background:#1a1f2e;border:1px solid #2d3748;border-radius:12px;padding:20px 28px;flex:1;min-width:150px}
+.kpi-val{font-size:30px;font-weight:700;margin-bottom:4px}
+.kpi-lbl{font-size:11px;color:#718096;text-transform:uppercase;letter-spacing:.5px}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px}
+.chart-box{background:#1a1f2e;border:1px solid #2d3748;border-radius:12px;padding:24px}
+.chart-box.full{grid-column:1/-1}
+.chart-box h3{font-size:12px;font-weight:600;color:#a0aec0;margin-bottom:20px;text-transform:uppercase;letter-spacing:.5px}
+.chart-wrap{position:relative;height:260px}
+.table-wrap{overflow-x:auto;border-radius:8px;border:1px solid #2d3748}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#0f1117;color:#718096;padding:10px 14px;text-align:left;font-weight:500;font-size:11px;text-transform:uppercase}
+td{padding:10px 14px;border-top:1px solid #2d3748;color:#e2e8f0}
+tr:hover td{background:#2d3748}
+.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.tag.high,.tag.declining,.tag.belowmarket{background:#7f1d1d;color:#fca5a5}
+.tag.medium{background:#78350f;color:#fcd34d}
+.tag.low,.tag.improving,.tag.atmarket{background:#064e3b;color:#6ee7b7}
+.tag.stable,.tag.abovemarket{background:#1e3a5f;color:#93c5fd}
+footer{text-align:center;padding:24px;color:#4a5568;font-size:12px;border-top:1px solid #2d3748;margin-top:32px}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>HR Analytics Dashboard</h1><div class="sub">Auto-generated | 05 Apr 2026, 12:29 | 8,950 employees</div></div>
+  <div class="badge">LIVE DATA</div>
+</header>
+<div class="tabs">
+  <div class="tab active" onclick="showPage('overview',this)">Overview</div>
+  <div class="tab" onclick="showPage('attrition',this)">Attrition Risk</div>
+  <div class="tab" onclick="showPage('salary',this)">Salary Benchmark</div>
+  <div class="tab" onclick="showPage('performance',this)">Performance Trends</div>
+</div>
+
+<div class="page active" id="overview">
+  <div class="kpi-row"><div class="kpi"><div class="kpi-val" style="color:#63b3ed">8,950</div><div class="kpi-lbl">Total Employees</div></div><div class="kpi"><div class="kpi-val" style="color:#1D9E75">8,570</div><div class="kpi-lbl">Active</div></div><div class="kpi"><div class="kpi-val" style="color:#FC8181">380</div><div class="kpi-lbl">Terminated</div></div><div class="kpi"><div class="kpi-val" style="color:#F6AD55">95.8%</div><div class="kpi-lbl">Active Rate</div></div><div class="kpi"><div class="kpi-val" style="color:#FC8181">0</div><div class="kpi-lbl">High Risk</div></div><div class="kpi"><div class="kpi-val" style="color:#F6AD55">1,626</div><div class="kpi-lbl">Below Market</div></div></div>
+  <div class="charts-grid">
+    <div class="chart-box"><h3>Employees by Department</h3><div class="chart-wrap"><canvas id="deptChart"></canvas></div></div>
+    <div class="chart-box"><h3>Gender Distribution</h3><div class="chart-wrap"><canvas id="genderChart"></canvas></div></div>
+  </div>
+</div>
+
+<div class="page" id="attrition">
+  <div class="kpi-row"><div class="kpi"><div class="kpi-val" style="color:#FC8181">0</div><div class="kpi-lbl">High Risk</div></div><div class="kpi"><div class="kpi-val" style="color:#F6AD55">0</div><div class="kpi-lbl">Medium Risk</div></div><div class="kpi"><div class="kpi-val" style="color:#1D9E75">8,570</div><div class="kpi-lbl">Low Risk</div></div><div class="kpi"><div class="kpi-val" style="color:#63b3ed">8,570</div><div class="kpi-lbl">Total Scored</div></div></div>
+  <div class="charts-grid">
+    <div class="chart-box"><h3>Risk Distribution</h3><div class="chart-wrap"><canvas id="riskPieChart"></canvas></div></div>
+    <div class="chart-box"><h3>Avg Risk Score by Department</h3><div class="chart-wrap"><canvas id="riskDeptChart"></canvas></div></div>
+    <div class="chart-box full"><h3>Top 20 High-Risk Employees</h3><div class='table-wrap'><table><tr><th>ID</th><th>Name</th><th>Dept</th><th>Job Title</th><th>Risk Score</th><th>Label</th><th>Top Factor</th></tr><tr><td>EMP01789</td><td>Catherine Jones</td><td>Operations</td><td>Logistics Coordinator</td><td>0.0266</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP01643</td><td>Ian Reese</td><td>Operations</td><td>Logistics Coordinator</td><td>0.0231</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP01361</td><td>Jessica Jarvis</td><td>Operations</td><td>Operations Analyst</td><td>0.0217</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP08186</td><td>Michelle Blake</td><td>Finance</td><td>Accountant</td><td>0.0205</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP03508</td><td>Mary Arnold</td><td>Operations</td><td>Logistics Coordinator</td><td>0.0191</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP05939</td><td>Lee Rogers</td><td>Operations</td><td>Inventory Specialist</td><td>0.0191</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP03954</td><td>Tyler Perez</td><td>Sales</td><td>Sales Representative</td><td>0.0188</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP02343</td><td>Frank Luna</td><td>Sales</td><td>Sales Representative</td><td>0.0182</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP07183</td><td>Martha Torres</td><td>Customer Service</td><td>Customer Service Representative</td><td>0.0175</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP01231</td><td>Kristi Dillon</td><td>Operations</td><td>Inventory Specialist</td><td>0.016</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP04972</td><td>Colton Williams</td><td>Operations</td><td>Inventory Specialist</td><td>0.0142</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP01690</td><td>Cheryl Sullivan</td><td>Customer Service</td><td>Help Desk Technician</td><td>0.0139</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP08522</td><td>Leslie Edwards</td><td>Operations</td><td>Logistics Coordinator</td><td>0.0136</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP07182</td><td>Kelly Ramos</td><td>Sales</td><td>Sales Consultant</td><td>0.0135</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP05177</td><td>Gregory Smith</td><td>Finance</td><td>Accounts Payable Specialist</td><td>0.0131</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP05848</td><td>Robert Dunn</td><td>Marketing</td><td>Content Creator</td><td>0.0124</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP01790</td><td>Samantha Rios</td><td>Operations</td><td>Inventory Specialist</td><td>0.0121</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP02250</td><td>Melissa Miller</td><td>Finance</td><td>Accountant</td><td>0.0121</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP04684</td><td>Kimberly Gonzalez</td><td>Sales</td><td>Sales Specialist</td><td>0.012</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr><tr><td>EMP08933</td><td>Rachel Martin</td><td>Customer Service</td><td>Help Desk Technician</td><td>0.0117</td><td><span class="tag low">Low</span></td><td>Short Tenure</td></tr></table></div></div>
+  </div>
+</div>
+
+<div class="page" id="salary">
+  <div class="kpi-row"><div class="kpi"><div class="kpi-val" style="color:#FC8181">1,626</div><div class="kpi-lbl">Below Market</div></div><div class="kpi"><div class="kpi-val" style="color:#1D9E75">5,705</div><div class="kpi-lbl">At Market</div></div><div class="kpi"><div class="kpi-val" style="color:#63b3ed">1,619</div><div class="kpi-lbl">Above Market</div></div></div>
+  <div class="charts-grid">
+    <div class="chart-box"><h3>Salary Band Distribution</h3><div class="chart-wrap"><canvas id="salBandChart"></canvas></div></div>
+    <div class="chart-box"><h3>Salary vs Market by Role (%)</h3><div class="chart-wrap"><canvas id="salRoleChart"></canvas></div></div>
+    <div class="chart-box full"><h3>Employees Most Below Market</h3><div class='table-wrap'><table><tr><th>Name</th><th>Job Title</th><th>Salary</th><th>Market Mid</th><th>vs Market</th><th>Band</th></tr><tr><td>Joshua Scott</td><td>IT Manager</td><td>$88,270</td><td>$140,000</td><td>-37.0%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Patricia Bennett</td><td>IT Manager</td><td>$88,707</td><td>$140,000</td><td>-36.6%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Colleen Riley</td><td>Accountant</td><td>$51,887</td><td>$78,000</td><td>-33.5%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>David Ellis</td><td>IT Manager</td><td>$94,154</td><td>$140,000</td><td>-32.7%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Megan Elliott</td><td>IT Manager</td><td>$94,413</td><td>$140,000</td><td>-32.6%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Susan Cowan</td><td>Sales Manager</td><td>$74,371</td><td>$110,000</td><td>-32.4%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Steve Armstrong</td><td>Accountant</td><td>$52,976</td><td>$78,000</td><td>-32.1%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Joseph Diaz</td><td>Accountant</td><td>$53,179</td><td>$78,000</td><td>-31.8%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Ashley Kennedy</td><td>Accountant</td><td>$54,093</td><td>$78,000</td><td>-30.6%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Wanda Goodwin</td><td>Sales Specialist</td><td>$52,966</td><td>$75,297</td><td>-29.7%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Amber Williams</td><td>Accountant</td><td>$54,920</td><td>$78,000</td><td>-29.6%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Emily Blackwell</td><td>IT Manager</td><td>$98,664</td><td>$140,000</td><td>-29.5%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Mary Vaughn</td><td>Accountant</td><td>$55,088</td><td>$78,000</td><td>-29.4%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Jennifer Brown</td><td>Accountant</td><td>$55,053</td><td>$78,000</td><td>-29.4%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Kimberly Martinez</td><td>Marketing Manager</td><td>$74,257</td><td>$105,000</td><td>-29.3%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Dennis Porter</td><td>Sales Specialist</td><td>$53,323</td><td>$75,297</td><td>-29.2%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Jonathan Rangel</td><td>Sales Manager</td><td>$78,328</td><td>$110,000</td><td>-28.8%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Dominique Valenzuela</td><td>IT Manager</td><td>$99,806</td><td>$140,000</td><td>-28.7%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Johnathan Webster</td><td>Operations Analyst</td><td>$52,612</td><td>$73,677</td><td>-28.6%</td><td><span class="tag belowmarket">Below Market</span></td></tr><tr><td>Jennifer King</td><td>Operations Analyst</td><td>$52,642</td><td>$73,677</td><td>-28.6%</td><td><span class="tag belowmarket">Below Market</span></td></tr></table></div></div>
+  </div>
+</div>
+
+<div class="page" id="performance">
+  <div class="kpi-row"><div class="kpi"><div class="kpi-val" style="color:#1D9E75">6,200</div><div class="kpi-lbl">Improving</div></div><div class="kpi"><div class="kpi-val" style="color:#FC8181">1,600</div><div class="kpi-lbl">Declining</div></div><div class="kpi"><div class="kpi-val" style="color:#63b3ed">1,150</div><div class="kpi-lbl">Stable</div></div><div class="kpi"><div class="kpi-val" style="color:#F6AD55">2,426</div><div class="kpi-lbl">At-Risk</div></div></div>
+  <div class="charts-grid">
+    <div class="chart-box"><h3>Average Score Trend Over Years</h3><div class="chart-wrap"><canvas id="trendChart"></canvas></div></div>
+    <div class="chart-box"><h3>Trend Direction Breakdown</h3><div class="chart-wrap"><canvas id="trendPieChart"></canvas></div></div>
+    <div class="chart-box full"><h3>Declining Performers</h3><div class='table-wrap'><table><tr><th>Name</th><th>Dept</th><th>Latest Score</th><th>Avg Score</th><th>Trend</th><th>YoY Delta</th><th>At Risk</th></tr><tr><td>Mitchell Clark</td><td>Customer Service</td><td>1.0</td><td>1.37</td><td><span class="tag declining">Declining</span></td><td>-0.7</td><td>Yes</td></tr><tr><td>Linda Morales</td><td>Sales</td><td>1.0</td><td>1.13</td><td><span class="tag declining">Declining</span></td><td>0.0</td><td>Yes</td></tr><tr><td>Erin Carlson</td><td>Operations</td><td>4.0</td><td>4.03</td><td><span class="tag declining">Declining</span></td><td>0.3</td><td>No</td></tr><tr><td>Patrick Ferrell</td><td>Sales</td><td>3.0</td><td>2.7</td><td><span class="tag declining">Declining</span></td><td>1.3</td><td>No</td></tr><tr><td>Katie Anderson</td><td>Operations</td><td>4.0</td><td>4.57</td><td><span class="tag declining">Declining</span></td><td>-0.7</td><td>No</td></tr><tr><td>John Caldwell</td><td>Operations</td><td>1.0</td><td>1.13</td><td><span class="tag declining">Declining</span></td><td>0.0</td><td>Yes</td></tr><tr><td>Thomas Russell</td><td>Finance</td><td>4.0</td><td>4.03</td><td><span class="tag declining">Declining</span></td><td>0.3</td><td>No</td></tr><tr><td>Collin Jordan</td><td>Sales</td><td>2.0</td><td>2.37</td><td><span class="tag declining">Declining</span></td><td>-0.7</td><td>No</td></tr><tr><td>Emily Joyce</td><td>Operations</td><td>4.0</td><td>4.37</td><td><span class="tag declining">Declining</span></td><td>-0.7</td><td>No</td></tr><tr><td>Mary Novak</td><td>Operations</td><td>2.0</td><td>1.8</td><td><span class="tag declining">Declining</span></td><td>1.0</td><td>Yes</td></tr><tr><td>Tricia Baker</td><td>Customer Service</td><td>1.0</td><td>1.37</td><td><span class="tag declining">Declining</span></td><td>-0.7</td><td>Yes</td></tr><tr><td>Kenneth Novak</td><td>Customer Service</td><td>2.0</td><td>2.37</td><td><span class="tag declining">Declining</span></td><td>-0.7</td><td>No</td></tr><tr><td>Casey Jones</td><td>Customer Service</td><td>4.0</td><td>4.03</td><td><span class="tag declining">Declining</span></td><td>0.3</td><td>No</td></tr><tr><td>James Moran</td><td>Marketing</td><td>1.0</td><td>1.37</td><td><span class="tag declining">Declining</span></td><td>-0.7</td><td>Yes</td></tr><tr><td>Shari Smith</td><td>Operations</td><td>4.0</td><td>4.47</td><td><span class="tag declining">Declining</span></td><td>-1.0</td><td>No</td></tr><tr><td>Grace Farrell</td><td>Operations</td><td>4.0</td><td>4.03</td><td><span class="tag declining">Declining</span></td><td>0.3</td><td>No</td></tr><tr><td>Tracy Whitehead</td><td>Operations</td><td>1.0</td><td>1.13</td><td><span class="tag declining">Declining</span></td><td>0.0</td><td>Yes</td></tr><tr><td>Joshua Smith</td><td>Sales</td><td>3.0</td><td>3.37</td><td><span class="tag declining">Declining</span></td><td>-0.7</td><td>No</td></tr><tr><td>Joyce Arnold</td><td>Customer Service</td><td>2.0</td><td>2.7</td><td><span class="tag declining">Declining</span></td><td>-1.7</td><td>No</td></tr><tr><td>Michelle Cherry</td><td>Marketing</td><td>2.0</td><td>2.03</td><td><span class="tag declining">Declining</span></td><td>0.3</td><td>Yes</td></tr></table></div></div>
+  </div>
+</div>
+
+<footer>HR Analytics Dashboard | 05 Apr 2026, 12:29</footer>
+<script>
+function showPage(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active');}
+const gc='rgba(255,255,255,0.06)',tc='#718096';
+const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc}}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc},grid:{color:gc}}}};
+new Chart('deptChart',{type:'bar',data:{labels:["Operations", "Sales", "Customer Service", "IT", "Marketing", "Finance", "HR"],datasets:[{data:[2718, 1835, 1673, 1382, 718, 452, 172],backgroundColor:'#378ADD',borderRadius:4,label:'Employees'}]},options:{...base,plugins:{legend:{display:false}}}});
+new Chart('genderChart',{type:'doughnut',data:{labels:["Male", "Female"],datasets:[{data:[4801, 4149],backgroundColor:['#63b3ed','#F687B3','#F6AD55'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:tc}}}}});
+new Chart('riskPieChart',{type:'doughnut',data:{labels:['High','Medium','Low'],datasets:[{data:[0,0,8570],backgroundColor:['#FC8181','#F6AD55','#1D9E75'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:tc}}}}});
+new Chart('riskDeptChart',{type:'bar',data:{labels:[],datasets:[{data:[],backgroundColor:'#FC8181',borderRadius:4,label:'Avg Risk Score'}]},options:{...base,indexAxis:'y',plugins:{legend:{display:false}}}});
+new Chart('salBandChart',{type:'doughnut',data:{labels:['Below Market','At Market','Above Market'],datasets:[{data:[1626,5705,1619],backgroundColor:['#FC8181','#1D9E75','#63b3ed'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:tc}}}}});
+new Chart('salRoleChart',{type:'bar',data:{labels:["IT Manager", "HR Manager", "Marketing Manager", "Accountant", "Sales Manager", "Financial Analyst", "Operations Manager", "Marketing Coordinator", "Sales Specialist", "System Administrator"],datasets:[{data:[-18.6, -17.8, -8.6, -5.8, -5.6, -4.0, -1.1, -0.8, -0.3, -0.2],backgroundColor:["#FC8181", "#FC8181", "#FC8181", "#FC8181", "#FC8181", "#FC8181", "#FC8181", "#FC8181", "#FC8181", "#FC8181"],borderRadius:4,label:'% vs Market'}]},options:{...base,indexAxis:'y',plugins:{legend:{display:false}}}});
+new Chart('trendChart',{type:'line',data:{labels:[2021, 2022, 2023],datasets:[{data:[2.82, 3.07, 3.32],borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,.15)',fill:true,tension:0.4,pointBackgroundColor:'#1D9E75',label:'Avg Score'}]},options:{...base}});
+new Chart('trendPieChart',{type:'doughnut',data:{labels:['Improving','Declining','Stable'],datasets:[{data:[6200,1600,1150],backgroundColor:['#1D9E75','#FC8181','#63b3ed'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:tc}}}}});
+</script>
+</body></html>
